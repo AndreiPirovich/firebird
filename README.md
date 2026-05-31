@@ -14,19 +14,24 @@ React Native test task: posts list, post details, favourites with persistence.
 
 - `mobile/` — React Native app
 - `prompts/` — AI implementation prompt
-- `docs/` — task description and UI references (screenshots in repo root)
+- Screenshots and task description in repo root
 
 ## Setup & run
 
 ```bash
 cd mobile && pnpm install
+```
+
+iOS (first time also install pods):
+
+```bash
+cd ios && bundle install && bundle exec pod install && cd ..
 pnpm run ios
 ```
 
 Android:
 
 ```bash
-cd mobile && pnpm install
 pnpm run android
 ```
 
