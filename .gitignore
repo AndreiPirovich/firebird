@@ -1,0 +1,23 @@
+# OS
+.DS_Store
+
+# Dependencies
+mobile/node_modules/
+
+# React Native
+mobile/.metro-health-check*
+mobile/ios/Pods/
+mobile/ios/build/
+mobile/android/.gradle/
+mobile/android/app/build/
+mobile/android/build/
+mobile/android/.cxx/
+
+# Env
+.env
+.env.*
+
+# IDE
+.idea/
+.vscode/
+*.xcuserstate

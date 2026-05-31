@@ -1,0 +1,7 @@
+Use React Native CLI, TypeScript, React Navigation 7, Zustand, AsyncStorage, and FakerJS.
+Do not use Expo.
+Keep UI, API, navigation, and state separated.
+Persist generated posts, details, Faker image URLs, and favourite IDs.
+Never refetch persisted posts/details unless the persisted data is absent.
+Use English comments only when they clarify non-obvious logic.
+Do not add comments for self-explanatory code.
