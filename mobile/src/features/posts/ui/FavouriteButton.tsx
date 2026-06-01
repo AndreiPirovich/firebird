@@ -1,4 +1,6 @@
 import {Pressable, StyleSheet, Text} from 'react-native';
+import {colors} from '../../../shared/theme/colors';
+import {spacing} from '../../../shared/theme/spacing';
 
 type Props = {
   isFavourite: boolean;
@@ -19,17 +21,17 @@ export function FavouriteButton({isFavourite, onPress}: Props) {
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#22c55e',
+    backgroundColor: colors.favouriteAdd,
     paddingVertical: 14,
     alignItems: 'center',
-    marginTop: 16,
+    marginTop: spacing.lg,
   },
   buttonRemove: {
-    backgroundColor: '#f59e0b',
+    backgroundColor: colors.favouriteRemove,
   },
   label: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#111',
+    color: colors.textPrimary,
   },
 });

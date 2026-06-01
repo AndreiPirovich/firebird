@@ -10,6 +10,7 @@ import {storage} from '../../../shared/storage/asyncStorage';
 
 type PostsState = {
   posts: PostListItem[];
+  hasLoadedPosts: boolean;
   detailsById: Record<number, PostDetails>;
   favouriteIds: number[];
   isHydrated: boolean;
@@ -28,6 +29,7 @@ export const usePostsStore = create<PostsState>()(
   persist(
     (set, get) => ({
       posts: [],
+      hasLoadedPosts: false,
       detailsById: {},
       favouriteIds: [],
       isHydrated: false,
@@ -39,8 +41,8 @@ export const usePostsStore = create<PostsState>()(
       setHydrated: () => set({isHydrated: true}),
 
       loadPostsOnce: async () => {
-        const {posts, isPostsLoading} = get();
-        if (posts.length > 0 || isPostsLoading) {
+        const {hasLoadedPosts, isPostsLoading} = get();
+        if (hasLoadedPosts || isPostsLoading) {
           return;
         }
 
@@ -50,6 +52,7 @@ export const usePostsStore = create<PostsState>()(
           const apiPosts = await fetchPosts();
           set({
             posts: enrichPostsForList(apiPosts),
+            hasLoadedPosts: true,
             isPostsLoading: false,
           });
         } catch (error) {
@@ -102,6 +105,7 @@ export const usePostsStore = create<PostsState>()(
       storage: createJSONStorage(() => storage),
       partialize: state => ({
         posts: state.posts,
+        hasLoadedPosts: state.hasLoadedPosts,
         detailsById: state.detailsById,
         favouriteIds: state.favouriteIds,
       }),

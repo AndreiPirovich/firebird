@@ -9,7 +9,11 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 export function RootNavigator() {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator
+        screenOptions={{
+          headerBackTitle: '',
+          headerBackButtonDisplayMode: 'minimal',
+        }}>
         <Stack.Screen
           name="Posts"
           component={PostsScreen}

@@ -1,4 +1,4 @@
-import {useEffect, useMemo} from 'react';
+import {useCallback, useEffect, useMemo} from 'react';
 import {
   ActivityIndicator,
   Image,
@@ -8,8 +8,15 @@ import {
   Text,
   View,
 } from 'react-native';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {useShallow} from 'zustand/react/shallow';
 import type {RootStackParamList} from '../../../app/navigation/types';
+import {colors} from '../../../shared/theme/colors';
+import {spacing} from '../../../shared/theme/spacing';
+import {errorStyles} from '../../../shared/ui/errorStyles';
+import {screenStyles} from '../../../shared/ui/screenStyles';
+import {typography} from '../../../shared/ui/typography';
 import {selectIsFavourite} from '../model/posts.selectors';
 import {usePostsStore} from '../model/posts.store';
 import {FavouriteButton} from '../ui/FavouriteButton';
@@ -18,15 +25,29 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Details'>;
 
 export function DetailsScreen({route}: Props) {
   const postId = route.params.postId;
+  const insets = useSafeAreaInsets();
 
-  const posts = usePostsStore(state => state.posts);
-  const detailsById = usePostsStore(state => state.detailsById);
-  const favouriteIds = usePostsStore(state => state.favouriteIds);
-  const isHydrated = usePostsStore(state => state.isHydrated);
-  const detailsLoadingById = usePostsStore(state => state.detailsLoadingById);
-  const detailsErrorById = usePostsStore(state => state.detailsErrorById);
-  const loadDetailsOnce = usePostsStore(state => state.loadDetailsOnce);
-  const toggleFavourite = usePostsStore(state => state.toggleFavourite);
+  const {
+    posts,
+    detailsById,
+    favouriteIds,
+    isHydrated,
+    detailsLoadingById,
+    detailsErrorById,
+    loadDetailsOnce,
+    toggleFavourite,
+  } = usePostsStore(
+    useShallow(state => ({
+      posts: state.posts,
+      detailsById: state.detailsById,
+      favouriteIds: state.favouriteIds,
+      isHydrated: state.isHydrated,
+      detailsLoadingById: state.detailsLoadingById,
+      detailsErrorById: state.detailsErrorById,
+      loadDetailsOnce: state.loadDetailsOnce,
+      toggleFavourite: state.toggleFavourite,
+    })),
+  );
 
   const listItem = useMemo(
     () => posts.find(post => post.id === postId),
@@ -48,10 +69,30 @@ export function DetailsScreen({route}: Props) {
     }
   }, [isHydrated, loadDetailsOnce, postId]);
 
+  const handleToggleFavourite = useCallback(() => {
+    toggleFavourite(postId);
+  }, [toggleFavourite, postId]);
+
+  const handleRetry = useCallback(() => {
+    loadDetailsOnce(postId);
+  }, [loadDetailsOnce, postId]);
+
+  const containerStyle = useMemo(
+    () => [
+      styles.container,
+      screenStyles.screenBackground,
+      {
+        paddingTop: insets.top + spacing.lg,
+        paddingBottom: insets.bottom + spacing.lg,
+      },
+    ],
+    [insets.top, insets.bottom],
+  );
+
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>{title}</Text>
-      <Text style={styles.body}>{body}</Text>
+    <ScrollView contentContainerStyle={containerStyle}>
+      <Text style={typography.titleLg}>{title}</Text>
+      <Text style={[typography.body, styles.bodySpacing]}>{body}</Text>
 
       {imageUrl ? (
         <Image source={{uri: imageUrl}} style={styles.image} />
@@ -62,19 +103,17 @@ export function DetailsScreen({route}: Props) {
       ) : null}
 
       {error && !details ? (
-        <View style={styles.errorBlock}>
-          <Text style={styles.error}>{error}</Text>
-          <Pressable
-            style={styles.retry}
-            onPress={() => loadDetailsOnce(postId)}>
-            <Text style={styles.retryText}>Retry</Text>
+        <View style={errorStyles.block}>
+          <Text style={errorStyles.text}>{error}</Text>
+          <Pressable style={errorStyles.retry} onPress={handleRetry}>
+            <Text style={errorStyles.retryText}>Retry</Text>
           </Pressable>
         </View>
       ) : null}
 
       <FavouriteButton
         isFavourite={isFavourite}
-        onPress={() => toggleFavourite(postId)}
+        onPress={handleToggleFavourite}
       />
     </ScrollView>
   );
@@ -82,28 +121,18 @@ export function DetailsScreen({route}: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
-    backgroundColor: '#f3f4f6',
+    paddingHorizontal: spacing.lg,
     flexGrow: 1,
   },
-  title: {
-    fontSize: 20,
-    fontWeight: '700',
-    marginBottom: 12,
-    color: '#111',
-  },
-  body: {
-    fontSize: 16,
-    lineHeight: 24,
-    color: '#333',
-    marginBottom: 16,
+  bodySpacing: {
+    marginBottom: spacing.lg,
   },
   image: {
     width: 300,
     height: 300,
     alignSelf: 'center',
-    borderRadius: 8,
-    backgroundColor: '#e5e7eb',
+    borderRadius: spacing.sm,
+    backgroundColor: colors.imagePlaceholder,
   },
   imagePlaceholder: {
     width: 300,
@@ -111,26 +140,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#e5e7eb',
-    borderRadius: 8,
-  },
-  errorBlock: {
-    marginTop: 12,
-    alignItems: 'center',
-  },
-  error: {
-    color: '#b91c1c',
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  retry: {
-    backgroundColor: '#3b82f6',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 8,
-  },
-  retryText: {
-    color: '#fff',
-    fontWeight: '600',
+    backgroundColor: colors.imagePlaceholder,
+    borderRadius: spacing.sm,
   },
 });
