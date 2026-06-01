@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import type {StateStorage} from 'zustand/middleware';
+import type { StateStorage } from 'zustand/middleware';
 
 const logError = (operation: string, key: string, error: unknown) => {
   console.error(`[AsyncStorage] ${operation} failed for key "${key}"`, error);

@@ -1,8 +1,8 @@
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {DetailsScreen} from '../../features/posts/screens/DetailsScreen';
-import {PostsScreen} from '../../features/posts/screens/PostsScreen';
-import type {RootStackParamList} from './types';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { DetailsScreen } from '../../features/posts/screens/DetailsScreen';
+import { PostsScreen } from '../../features/posts/screens/PostsScreen';
+import type { RootStackParamList } from './types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -13,16 +13,17 @@ export function RootNavigator() {
         screenOptions={{
           headerBackTitle: '',
           headerBackButtonDisplayMode: 'minimal',
-        }}>
+        }}
+      >
         <Stack.Screen
           name="Posts"
           component={PostsScreen}
-          options={{title: 'PostsScreen'}}
+          options={{ title: 'PostsScreen' }}
         />
         <Stack.Screen
           name="Details"
           component={DetailsScreen}
-          options={{title: 'DetailsScreen'}}
+          options={{ title: 'DetailsScreen' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

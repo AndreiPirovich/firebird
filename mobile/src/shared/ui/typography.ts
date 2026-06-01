@@ -1,6 +1,6 @@
-import {StyleSheet} from 'react-native';
-import {colors} from '../theme/colors';
-import {spacing} from '../theme/spacing';
+import { StyleSheet } from 'react-native';
+import { colors } from '../theme/colors';
+import { spacing } from '../theme/spacing';
 
 export const typography = StyleSheet.create({
   titleLg: {

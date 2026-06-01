@@ -1,9 +1,9 @@
-import {memo, useCallback} from 'react';
-import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
-import {colors} from '../../../shared/theme/colors';
-import {spacing} from '../../../shared/theme/spacing';
-import {typography} from '../../../shared/ui/typography';
-import type {PostListItem} from '../model/posts.types';
+import { memo, useCallback } from 'react';
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { colors } from '../../../shared/theme/colors';
+import { spacing } from '../../../shared/theme/spacing';
+import { typography } from '../../../shared/ui/typography';
+import type { PostListItem } from '../model/posts.types';
 
 type Props = {
   post: PostListItem;
@@ -11,7 +11,7 @@ type Props = {
   onPressPost: (postId: number) => void;
 };
 
-function PostCardComponent({post, isFavourite, onPressPost}: Props) {
+function PostCardComponent({ post, isFavourite, onPressPost }: Props) {
   const handlePress = useCallback(() => {
     onPressPost(post.id);
   }, [onPressPost, post.id]);
@@ -19,7 +19,8 @@ function PostCardComponent({post, isFavourite, onPressPost}: Props) {
   return (
     <Pressable
       onPress={handlePress}
-      style={[styles.card, isFavourite && styles.cardFavourite]}>
+      style={[styles.card, isFavourite && styles.cardFavourite]}
+    >
       <View style={styles.textBlock}>
         <Text style={typography.titleMd} numberOfLines={2}>
           {post.title}
@@ -28,7 +29,7 @@ function PostCardComponent({post, isFavourite, onPressPost}: Props) {
           {post.body}
         </Text>
       </View>
-      <Image source={{uri: post.previewImageUrl}} style={styles.thumbnail} />
+      <Image source={{ uri: post.previewImageUrl }} style={styles.thumbnail} />
     </Pressable>
   );
 }

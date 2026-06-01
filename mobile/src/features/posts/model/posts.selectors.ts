@@ -1,9 +1,6 @@
-import type {PostListItem} from './posts.types';
+import type { PostListItem } from './posts.types';
 
-export function selectIsFavourite(
-  favouriteIds: number[],
-  id: number,
-): boolean {
+export function selectIsFavourite(favouriteIds: number[], id: number): boolean {
   return favouriteIds.includes(id);
 }
 

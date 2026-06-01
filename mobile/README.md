@@ -2,6 +2,7 @@
 
 ```bash
 pnpm install
+pnpm run check
 pnpm run ios
 # or
 pnpm run android

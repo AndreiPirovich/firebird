@@ -6,8 +6,10 @@ mobile/node_modules/
 
 # React Native
 mobile/.metro-health-check*
+mobile/vendor/bundle/
 mobile/ios/Pods/
 mobile/ios/build/
+**/.xcode.env.local
 mobile/android/.gradle/
 mobile/android/app/build/
 mobile/android/build/
@@ -16,6 +18,11 @@ mobile/android/.cxx/
 # Env
 .env
 .env.*
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
 
 # IDE
 .idea/

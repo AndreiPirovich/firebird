@@ -1,10 +1,7 @@
-import {httpGet} from '../../../shared/api/http';
-import type {ApiPost} from '../model/posts.types';
-import {
-  createDetailsImageUrl,
-  createPreviewImageUrl,
-} from './posts.images';
-import type {PostDetails, PostListItem} from '../model/posts.types';
+import { httpGet } from '../../../shared/api/http';
+import type { ApiPost } from '../model/posts.types';
+import { createDetailsImageUrl, createPreviewImageUrl } from './posts.images';
+import type { PostDetails, PostListItem } from '../model/posts.types';
 
 const POSTS_URL = 'https://jsonplaceholder.typicode.com/posts';
 
