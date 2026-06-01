@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useMemo} from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -7,21 +7,21 @@ import {
   Text,
   View,
 } from 'react-native';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import type {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {useShallow} from 'zustand/react/shallow';
-import type {RootStackParamList} from '../../../app/navigation/types';
-import {spacing} from '../../../shared/theme/spacing';
-import {errorStyles} from '../../../shared/ui/errorStyles';
-import {screenStyles} from '../../../shared/ui/screenStyles';
-import {selectIsFavourite, selectSortedPosts} from '../model/posts.selectors';
-import {usePostsStore} from '../model/posts.store';
-import type {PostListItem} from '../model/posts.types';
-import {PostCard} from '../ui/PostCard';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useShallow } from 'zustand/react/shallow';
+import type { RootStackParamList } from '../../../app/navigation/types';
+import { spacing } from '../../../shared/theme/spacing';
+import { errorStyles } from '../../../shared/ui/errorStyles';
+import { screenStyles } from '../../../shared/ui/screenStyles';
+import { selectSortedPosts } from '../model/posts.selectors';
+import { usePostsStore } from '../model/posts.store';
+import type { PostListItem } from '../model/posts.types';
+import { PostCard } from '../ui/PostCard';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Posts'>;
 
-export function PostsScreen({navigation}: Props) {
+export function PostsScreen({ navigation }: Props) {
   const insets = useSafeAreaInsets();
 
   const {
@@ -45,32 +45,35 @@ export function PostsScreen({navigation}: Props) {
   );
 
   useEffect(() => {
-    if (isHydrated) {
+    if (isHydrated && !hasLoadedPosts) {
       loadPostsOnce();
     }
-  }, [isHydrated, loadPostsOnce]);
+  }, [hasLoadedPosts, isHydrated, loadPostsOnce]);
 
   const sortedPosts = useMemo(
     () => selectSortedPosts(posts, favouriteIds),
     [posts, favouriteIds],
   );
+  const favouriteIdSet = useMemo(() => new Set(favouriteIds), [favouriteIds]);
 
   const onPressPost = useCallback(
     (postId: number) => {
-      navigation.navigate('Details', {postId});
+      navigation.navigate('Details', { postId });
     },
     [navigation],
   );
 
+  const keyExtractor = useCallback((item: PostListItem) => String(item.id), []);
+
   const renderItem = useCallback(
-    ({item}: ListRenderItemInfo<PostListItem>) => (
+    ({ item }: ListRenderItemInfo<PostListItem>) => (
       <PostCard
         post={item}
-        isFavourite={selectIsFavourite(favouriteIds, item.id)}
+        isFavourite={favouriteIdSet.has(item.id)}
         onPressPost={onPressPost}
       />
     ),
-    [favouriteIds, onPressPost],
+    [favouriteIdSet, onPressPost],
   );
 
   const listContentStyle = useMemo(
@@ -87,7 +90,7 @@ export function PostsScreen({navigation}: Props) {
   const centeredStyle = useMemo(
     () => [
       screenStyles.centered,
-      {paddingTop: insets.top, paddingBottom: insets.bottom},
+      { paddingTop: insets.top, paddingBottom: insets.bottom },
     ],
     [insets.top, insets.bottom],
   );
@@ -115,7 +118,7 @@ export function PostsScreen({navigation}: Props) {
     <FlatList
       contentContainerStyle={listContentStyle}
       data={sortedPosts}
-      keyExtractor={item => String(item.id)}
+      keyExtractor={keyExtractor}
       renderItem={renderItem}
     />
   );

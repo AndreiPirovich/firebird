@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useMemo} from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import {
   ActivityIndicator,
   Image,
@@ -8,56 +8,46 @@ import {
   Text,
   View,
 } from 'react-native';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import type {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {useShallow} from 'zustand/react/shallow';
-import type {RootStackParamList} from '../../../app/navigation/types';
-import {colors} from '../../../shared/theme/colors';
-import {spacing} from '../../../shared/theme/spacing';
-import {errorStyles} from '../../../shared/ui/errorStyles';
-import {screenStyles} from '../../../shared/ui/screenStyles';
-import {typography} from '../../../shared/ui/typography';
-import {selectIsFavourite} from '../model/posts.selectors';
-import {usePostsStore} from '../model/posts.store';
-import {FavouriteButton} from '../ui/FavouriteButton';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useShallow } from 'zustand/react/shallow';
+import type { RootStackParamList } from '../../../app/navigation/types';
+import { colors } from '../../../shared/theme/colors';
+import { spacing } from '../../../shared/theme/spacing';
+import { errorStyles } from '../../../shared/ui/errorStyles';
+import { screenStyles } from '../../../shared/ui/screenStyles';
+import { typography } from '../../../shared/ui/typography';
+import { selectIsFavourite } from '../model/posts.selectors';
+import { usePostsStore } from '../model/posts.store';
+import { FavouriteButton } from '../ui/FavouriteButton';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Details'>;
 
-export function DetailsScreen({route}: Props) {
+export function DetailsScreen({ route }: Props) {
   const postId = route.params.postId;
   const insets = useSafeAreaInsets();
 
   const {
-    posts,
-    detailsById,
-    favouriteIds,
+    listItem,
+    details,
+    isFavourite,
     isHydrated,
-    detailsLoadingById,
-    detailsErrorById,
+    isLoading,
+    error,
     loadDetailsOnce,
     toggleFavourite,
   } = usePostsStore(
     useShallow(state => ({
-      posts: state.posts,
-      detailsById: state.detailsById,
-      favouriteIds: state.favouriteIds,
+      listItem: state.posts.find(post => post.id === postId),
+      details: state.detailsById[postId],
+      isFavourite: selectIsFavourite(state.favouriteIds, postId),
       isHydrated: state.isHydrated,
-      detailsLoadingById: state.detailsLoadingById,
-      detailsErrorById: state.detailsErrorById,
+      isLoading: state.detailsLoadingById[postId],
+      error: state.detailsErrorById[postId],
       loadDetailsOnce: state.loadDetailsOnce,
       toggleFavourite: state.toggleFavourite,
     })),
   );
-
-  const listItem = useMemo(
-    () => posts.find(post => post.id === postId),
-    [posts, postId],
-  );
-
-  const details = detailsById[postId];
-  const isLoading = detailsLoadingById[postId];
-  const error = detailsErrorById[postId];
-  const isFavourite = selectIsFavourite(favouriteIds, postId);
 
   const title = details?.title ?? listItem?.title ?? '';
   const body = details?.body ?? listItem?.body ?? '';
@@ -95,7 +85,7 @@ export function DetailsScreen({route}: Props) {
       <Text style={[typography.body, styles.bodySpacing]}>{body}</Text>
 
       {imageUrl ? (
-        <Image source={{uri: imageUrl}} style={styles.image} />
+        <Image source={{ uri: imageUrl }} style={styles.image} />
       ) : isLoading ? (
         <View style={styles.imagePlaceholder}>
           <ActivityIndicator />
